@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #calculator {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      max-width: 300px;
+      margin: auto;
+      text-align: center;
+      border: 1px solid #000000;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #display {
+      grid-column: span 4;
+      height: 40px;
+      font-size: 18px;
+      margin-bottom: 8px;
+      text-align: right;
+      padding: 0 8px;
+    }
+
+    button {
+      height: 40px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button.operator {
+      background-color: #ff0000;
+      color: rgb(255, 255, 255);
+    }
+
+    button.double {
+      grid-column: span 2;
+    }
+  </style>
+  <title>Basic Calculator</title>
+</head>
+<body>
+  <div id="calculator">
+    <div id="display"></div>
+    <button>7</button>
+    <button>8</button>
+    <button>9</button>
+    <button class="operator">/</button>
+    <button>4</button>
+    <button>5</button>
+    <button>6</button>
+    <button class="operator">*</button>
+    <button>1</button>
+    <button>2</button>
+    <button>3</button>
+    <button class="operator">-</button>
+    <button class="double">0</button>
+    <button>.</button>
+    <button class="operator">=</button>
+    <button class="operator double">+</button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const display = document.getElementById("display");
+      const buttons = document.querySelectorAll("button");
+
+      let currentInput = "";
+      let operator = "";
+      let firstOperand = null;
+
+      buttons.forEach(button => {
+        button.addEventListener("click", handleClick);
+      });
+
+      function handleClick() {
+        const value = this.textContent;
+
+        switch (value) {
+          case "=":
+            if (currentInput && firstOperand !== null) {
+              currentInput = operate(firstOperand, parseFloat(currentInput), operator);
+              display.textContent = currentInput;
+              firstOperand = null;
+              operator = "";
+            }
+            break;
+          case "+":
+          case "-":
+          case "*":
+          case "/":
+            if (currentInput && firstOperand === null) {
+              firstOperand = parseFloat(currentInput);
+              currentInput = "";
+              operator = value;
+            } else if (currentInput && firstOperand !== null) {
+              firstOperand = operate(firstOperand, parseFloat(currentInput), operator);
+              display.textContent = firstOperand;
+              currentInput = "";
+              operator = value;
+            }
+            break;
+          default:
+            currentInput += value;
+            display.textContent = currentInput;
+            break;
+        }
+      }
+
+      function operate(a, b, operator) {
+        switch (operator) {
+          case "+":
+            return a + b;
+          case "-":
+            return a - b;
+          case "*":
+            return a * b;
+          case "/":
+            return a / b;
+          default:
+            return b;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
